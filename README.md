@@ -15,5 +15,5 @@ docker-compose rm kong
 ## Analytics and Monitoring
 
 ```
-docker run -d --name zipkin --restart unless-stopped --netword kong-net -p 9411:9411 openzipkin/zipkin:2
+docker run -d --name zipkin --restart unless-stopped --network kong-net -p 9411:9411 openzipkin/zipkin:2
 ```
