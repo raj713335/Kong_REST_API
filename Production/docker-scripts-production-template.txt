@@ -1,0 +1,38 @@
+----- This section is for Kong -----
+
+----- 1: Create Docker Network -----
+docker network create kong-net
+
+----- 2: Create Kong Database -----
+Create kong database which is not docker. Use PostgreSQK native installation, and create database for kong.
+
+----- 3: Run Kong Database Preparation -----
+docker run --rm --network=kong-net  -e "KONG_DATABASE=postgres" -e "KONG_PG_HOST=[change-me : postgresql IP]" -e "KONG_PG_PORT=[change-me : postgresql port]" -e "KONG_PG_USER=[change-me : postgresql username]" -e "KONG_PG_PASSWORD=[change-me : postgresql password]" -e "KONG_PG_DATABASE=[change-me : postgresql database name]" kong:1.0.3-alpine kong migrations bootstrap
+
+Example:
+docker run --rm --network=kong-net  -e "KONG_DATABASE=postgres" -e "KONG_PG_HOST=10.5.0.129" -e "KONG_PG_PORT=5432" -e "KONG_PG_USER=kingkong" -e "KONG_PG_PASSWORD=kingkongpass" -e "KONG_PG_DATABASE=kingkong-db" kong:1.0.3-alpine kong migrations bootstrap
+
+
+----- 4: Run Kong -----
+docker run -d --name kong --network=kong-net --restart always -e "KONG_DATABASE=postgres" -e "KONG_PG_HOST=[change-me : postgresql IP]" -e "KONG_PG_PORT=[change-me : postgresql port]" -e "KONG_PG_USER=[change-me : postgresql username]" -e "KONG_PG_PASSWORD=[change-me : postgresql password]" -e "KONG_PG_DATABASE=[change-me : postgresql database name]" -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" -e "KONG_PROXY_ERROR_LOG=/dev/stderr" -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" -p 80:8000 -p 443:8443 kong:1.0.3-alpine
+
+Example:
+docker run -d --name kong --network=kong-net --restart always -e "KONG_DATABASE=postgres" -e "KONG_PG_HOST=10.5.0.129" -e "KONG_PG_PORT=5432" -e "KONG_PG_USER=kingkong" -e "KONG_PG_PASSWORD=kingkongpass" -e "KONG_PG_DATABASE=kingkong-db" -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" -e "KONG_PROXY_ERROR_LOG=/dev/stderr" -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" -p 80:8000 -p 443:8443 kong:1.0.3-alpine
+
+
+
+
+----- This section is for Konga -----
+
+----- 1: Prepare Konga Database -----
+docker run --rm --name konga --network=kong-net pantsel/konga:0.14.1 -c prepare -a postgres -u postgresql://[change-me : postgresql username]:[change-me : postgresql password]@[change-me : postgresql IP]:[change-me : postgresql port]/[change-me : postgresql database name]
+
+Example:
+docker run --rm --name konga --network=kong-net pantsel/konga:0.14.1 -c prepare -a postgres -u postgresql://kingkong:kingkongpass@10.5.0.129:5432/konga_db
+
+
+----- 2: Run Konga -----
+docker run -d -p 1337:1337 --network kong-net --name konga --restart=always -e "NODE_ENV=production" -e "TOKEN_SECRET=[change-me : random string]" -e "DB_ADAPTER=postgres" -e “DB_URI=postgresql://[change-me : postgresql username]:[change-me : postgresql password]@[change-me : postgresql IP]:[change-me : postgresql port]/[change-me : postgresql database name]” pantsel/konga:0.14.1
+
+Example: 
+docker run -d -p 1337:1337 --network kong-net --name konga --restart=always -e "NODE_ENV=production" -e "TOKEN_SECRET=iu7YDcPLiZkozQXzZ9kka3Ee1Vid5ZgQ" -e "DB_ADAPTER=postgres" -e “DB_URI=postgresql://kingkong:kingkongpass@10.5.0.129:5432/konga_db” pantsel/konga:0.14.1
