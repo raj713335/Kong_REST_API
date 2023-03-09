@@ -79,7 +79,7 @@ docker image rm 9b5c02e589c5 905fa5c1c696 78e360357d1a
 ## Monitoring Kong Vitals
 
 ```
-docker run -d --name prometheus --restart always --network kong-net -p 9090:9090 -v d:/development/api-management/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus:v2.22.0
+docker run -d --name prometheus --restart always --network kong-net -p 9090:9090 -v C:/development/api-management/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus:v2.22.0
 
 
 docker run -d --name grafana --restart always --network kong-net -p 3000:3000 grafana/grafana:7.2.2
