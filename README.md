@@ -74,3 +74,28 @@ docker image rm [image-id-elasticsearch] [image-id-logstash] [image-id-kibana]
 Example remove images (image ID might be different):
 docker image rm 9b5c02e589c5 905fa5c1c696 78e360357d1a
 ```
+
+
+## Monitoring Kong Vitals
+
+```
+docker run -d --name prometheus --restart always --network kong-net -p 9090:9090 -v d:/development/api-management/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus:v2.22.0
+
+
+docker run -d --name grafana --restart always --network kong-net -p 3000:3000 grafana/grafana:7.2.2
+```
+
+```
+1. For prometheus configuration, use prometheus.yml
+2. Put prometheus.yml into some folder (example : C:/prometheus or /usr/home/user/prometheus)
+3. Use the docker-script.txt for creating docker containers. Adjust the docker script for prometheus (1st script
+4. Change the d:/development/api-management/prometheus.yml (in docker script) into the location where you put prometheus.yml, so for example it become like this :
+
+docker run -d --name prometheus ... -v c:/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml ...
+
+or
+
+docker run -d --name prometheus ... -v /usr/home/user/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml ...
+
+5. Run the script to create docker prometheus & grafana
+```
