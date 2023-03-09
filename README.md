@@ -53,3 +53,23 @@ docker run -d --name logstash ... -v /usr/home/user/logstash/pipeline:/usr/share
 5. Run the script to create docker
 NOTE : For Windows, enable shared folder from docker settings
 ```
+
+1. Stop & remove containers
+
+docker container stop elasticsearch logstash kibana
+
+docker container rm elasticsearch logstash kibana
+
+
+
+2. Remove images
+
+docker image ls : then copy paste the image id into command below
+
+docker image rm [image-id-elasticsearch] [image-id-logstash] [image-id-kibana]
+
+
+
+Example remove images (image ID might be different):
+
+docker image rm 9b5c02e589c5 905fa5c1c696 78e360357d1a
